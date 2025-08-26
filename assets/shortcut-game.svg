@@ -1,0 +1,31 @@
+<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect x="0" y="0" width="192" height="192" rx="30" ry="30" fill="url(#bgGradient)" />
+  
+  <!-- Calendar icon -->
+  <rect x="40" y="60" width="112" height="92" rx="8" ry="8" fill="white" />
+  <rect x="40" y="60" width="112" height="28" rx="8" ry="8" fill="#E5E7EB" />
+  
+  <!-- Calendar rings -->
+  <rect x="65" y="45" width="8" height="30" rx="4" ry="4" fill="white" />
+  <rect x="119" y="45" width="8" height="30" rx="4" ry="4" fill="white" />
+  
+  <!-- Calendar grid -->
+  <line x1="60" y1="105" x2="132" y2="105" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="60" y1="120" x2="132" y2="120" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="60" y1="135" x2="132" y2="135" stroke="#D1D5DB" stroke-width="1"/>
+  
+  <line x1="72" y1="88" x2="72" y2="152" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="96" y1="88" x2="96" y2="152" stroke="#D1D5DB" stroke-width="1"/>
+  <line x1="120" y1="88" x2="120" y2="152" stroke="#D1D5DB" stroke-width="1"/>
+  
+  <!-- Today highlight -->
+  <circle cx="84" cy="112" r="6" fill="#4F46E5" />
+</svg>
