@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner - Your Personal Assistant</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/icon-192.png">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Daily Planner">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>Daily Planner</h1>
+            <div class="date-display" id="currentDate"></div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </button>
+            <button class="nav-btn" data-page="game">
+                <span class="nav-icon">🎮</span>
+                <span class="nav-text">Game</span>
+            </button>
+            <button class="nav-btn" data-page="notes">
+                <span class="nav-icon">📝</span>
+                <span class="nav-text">Notes</span>
+            </button>
+            <button class="nav-btn" data-page="alarms">
+                <span class="nav-icon">⏰</span>
+                <span class="nav-text">Alarms</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <div id="home-page" class="page active">
+                <div class="greeting-section">
+                    <h2 id="greeting">Good Morning!</h2>
+                    <div class="today-wishes" id="todayWishes"></div>
+                </div>
+
+                <div class="quote-section">
+                    <div class="quote-card">
+                        <div class="quote-text" id="dailyQuote">Loading inspiring quote...</div>
+                        <div class="quote-author" id="quoteAuthor"></div>
+                        <button class="refresh-quote-btn" id="refreshQuote">🔄</button>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="showPage('game')">
+                            <span class="action-icon">🎯</span>
+                            <span>Morning Game</span>
+                        </button>
+                        <button class="action-btn" onclick="showPage('notes')">
+                            <span class="action-icon">✍️</span>
+                            <span>Add Note</span>
+                        </button>
+                        <button class="action-btn" onclick="showPage('alarms')">
+                            <span class="action-icon">⏰</span>
+                            <span>Set Reminder</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="today-summary">
+                    <h3>Today's Overview</h3>
+                    <div class="summary-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="notesCount">0</span>
+                            <span class="stat-label">Notes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="remindersCount">0</span>
+                            <span class="stat-label">Reminders</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="gameScore">0</span>
+                            <span class="stat-label">Game Score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Page -->
+            <div id="game-page" class="page">
+                <div class="game-header">
+                    <h2>Word Scramble Challenge</h2>
+                    <div class="game-stats">
+                        <span>Score: <span id="currentScore">0</span></span>
+                        <span>Time: <span id="gameTimer">60</span>s</span>
+                    </div>
+                </div>
+
+                <div class="game-content">
+                    <div class="scrambled-word" id="scrambledWord">LOADING</div>
+                    <div class="word-hint" id="wordHint">Hint will appear here</div>
+                    
+                    <div class="game-input">
+                        <input type="text" id="guessInput" placeholder="Enter your guess..." maxlength="20">
+                        <button id="submitGuess" class="submit-btn">Submit</button>
+                    </div>
+
+                    <div class="game-feedback" id="gameFeedback"></div>
+                    
+                    <div class="game-controls">
+                        <button id="newWordBtn" class="control-btn">New Word</button>
+                        <button id="skipWordBtn" class="control-btn">Skip</button>
+                        <button id="startGameBtn" class="control-btn primary">Start Game</button>
+                    </div>
+                </div>
+
+                <div class="high-scores">
+                    <h3>High Scores</h3>
+                    <div id="highScoresList" class="scores-list"></div>
+                </div>
+            </div>
+
+            <!-- Notes Page -->
+            <div id="notes-page" class="page">
+                <div class="notes-header">
+                    <h2>My Notes</h2>
+                    <button id="addNoteBtn" class="add-btn">+ Add Note</button>
+                </div>
+
+                <div class="notes-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="today">Today</button>
+                    <button class="filter-btn" data-filter="important">Important</button>
+                </div>
+
+                <div class="notes-container" id="notesContainer">
+                    <!-- Notes will be dynamically added here -->
+                </div>
+
+                <!-- Add/Edit Note Modal -->
+                <div id="noteModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modalTitle">Add New Note</h3>
+                            <button class="close-btn" id="closeModal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" id="noteTitle" placeholder="Note title..." maxlength="100">
+                            <textarea id="noteContent" placeholder="Write your note here..." rows="6"></textarea>
+                            <div class="note-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="importantNote">
+                                    <span>Mark as important</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelNote" class="cancel-btn">Cancel</button>
+                            <button id="saveNote" class="save-btn">Save Note</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alarms Page -->
+            <div id="alarms-page" class="page">
+                <div class="alarms-header">
+                    <h2>Alarms & Reminders</h2>
+                    <button id="addAlarmBtn" class="add-btn">+ Add Alarm</button>
+                </div>
+
+                <div class="alarms-container" id="alarmsContainer">
+                    <!-- Alarms will be dynamically added here -->
+                </div>
+
+                <!-- Add/Edit Alarm Modal -->
+                <div id="alarmModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="alarmModalTitle">Add New Alarm</h3>
+                            <button class="close-btn" id="closeAlarmModal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" id="alarmTitle" placeholder="Alarm title..." maxlength="100">
+                            <div class="time-input">
+                                <label>Time:</label>
+                                <input type="time" id="alarmTime" required>
+                            </div>
+                            <div class="date-input">
+                                <label>Date:</label>
+                                <input type="date" id="alarmDate" required>
+                            </div>
+                            <div class="repeat-options">
+                                <label>Repeat:</label>
+                                <select id="alarmRepeat">
+                                    <option value="none">No repeat</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <textarea id="alarmNote" placeholder="Additional notes..." rows="3"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelAlarm" class="cancel-btn">Cancel</button>
+                            <button id="saveAlarm" class="save-btn">Save Alarm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notification Container -->
+        <div id="notifications" class="notifications-container"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/quotes.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/notes.js"></script>
+    <script src="js/alarms.js"></script>
+    <script src="js/wishes.js"></script>
+    <script src="js/storage.js"></script>
+</body>
+</html>
