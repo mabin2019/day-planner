@@ -48,7 +48,7 @@ class GameManager {
             currentWord: null,
             scrambledWord: '',
             score: 0,
-            timeLeft: 60,
+            timeLeft: 180, // 3 minutes = 180 seconds
             gameActive: false,
             wordsCompleted: 0,
             correctAnswers: 0,
@@ -114,7 +114,7 @@ class GameManager {
             currentWord: null,
             scrambledWord: '',
             score: 0,
-            timeLeft: 60,
+            timeLeft: 180, // 3 minutes = 180 seconds
             gameActive: true,
             wordsCompleted: 0,
             correctAnswers: 0,
@@ -128,7 +128,7 @@ class GameManager {
         this.updateGameControls();
 
         if (window.app) {
-            window.app.showNotification('Game started! Good luck! 🎮', 'info');
+            window.app.showNotification('Game started! You have 3 minutes! 🎮', 'info');
         }
     }
 
@@ -252,7 +252,7 @@ class GameManager {
 
     calculatePoints() {
         const basePoints = this.gameState.currentWord.word.length * 10;
-        const timeBonus = Math.max(0, this.gameState.timeLeft - 30) * 2;
+        const timeBonus = Math.max(0, this.gameState.timeLeft - 120) * 2; // Adjusted for 3-minute game
         const difficultyMultiplier = this.difficultyLevels[this.currentDifficulty].scoreMultiplier;
         
         return Math.round((basePoints + timeBonus) * difficultyMultiplier);
@@ -263,7 +263,7 @@ class GameManager {
             return;
         }
 
-        const penalty = 5;
+        const penalty = 10; // Increased penalty for longer game
         this.gameState.timeLeft = Math.max(0, this.gameState.timeLeft - penalty);
         
         this.showFeedback(`Word skipped! -${penalty} seconds ⏰`, 'error');
@@ -280,9 +280,18 @@ class GameManager {
             clearInterval(this.gameState.gameTimer);
         }
 
+        // Show the correct word if there was one active when time ran out
+        if (this.gameState.currentWord) {
+            this.showFeedback(`⏰ Time's up! The word was: "${this.gameState.currentWord.word}"`, 'info');
+        }
+
         this.saveGameResults();
         this.updateGameControls();
-        this.showGameSummary();
+        
+        // Delay the game summary to show the correct word first
+        setTimeout(() => {
+            this.showGameSummary();
+        }, 3000); // 3 seconds to read the correct word
     }
 
     saveGameResults() {
@@ -314,6 +323,7 @@ class GameManager {
             Final Score: ${this.gameState.score}
             Words Completed: ${this.gameState.correctAnswers}
             Accuracy: ${accuracy}%
+            Time Played: 3 minutes
         `;
 
         this.showFeedback(summary, 'info');
@@ -352,12 +362,17 @@ class GameManager {
     updateTimer() {
         const timerElement = document.getElementById('gameTimer');
         if (timerElement) {
-            timerElement.textContent = this.gameState.timeLeft;
+            // Display in MM:SS format for better readability with 3 minutes
+            const minutes = Math.floor(this.gameState.timeLeft / 60);
+            const seconds = this.gameState.timeLeft % 60;
+            const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            timerElement.textContent = timeDisplay;
             
             // Change color when time is running low
-            if (this.gameState.timeLeft <= 10) {
+            if (this.gameState.timeLeft <= 30) {
                 timerElement.style.color = '#ef4444';
-            } else if (this.gameState.timeLeft <= 30) {
+            } else if (this.gameState.timeLeft <= 60) {
                 timerElement.style.color = '#f59e0b';
             } else {
                 timerElement.style.color = '#6b7280';
@@ -482,7 +497,7 @@ class GameManager {
         this.showFeedback(`Letter hint: ${hint.join(' ')} 💡`, 'info');
         
         // Small time penalty for using hint
-        this.gameState.timeLeft = Math.max(0, this.gameState.timeLeft - 3);
+        this.gameState.timeLeft = Math.max(0, this.gameState.timeLeft - 5);
     }
 
     // Pause/Resume game
